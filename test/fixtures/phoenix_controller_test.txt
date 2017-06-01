@@ -1,0 +1,16 @@
+defmodule PhoenixControllerTest do
+  use ExUnit.Case, async: true
+  use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
+  @moduletag :integration
+  @moduledoc """
+  For test purposes, here are the docs
+  some more lines
+  """
+  test "#POST /api/v1/the_apt returns proper response" do
+    use_cassette "some_thing_for_phoenix_controller" do
+      do_some_setup
+      assert response.status == 200
+      assert String.contains?(response.resp_body, expectation_1)
+    end
+  end
+end
