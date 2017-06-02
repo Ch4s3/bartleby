@@ -5,7 +5,9 @@ defmodule Parser do
   the test file and its tags, cases, and assertions.
   ##Examples
     iex> Parser.parse("test/fixtures/phoenix_controller_test.txt")
-    %TestFile{name: "PhoenixControllerTest"}
+    %TestFile{
+      name: "PhoenixControllerTest", 
+      docs: "For test purposes, here are the docs\\nsome more lines\\n"}
   """
   @spec parse(String.t) :: TestFile.t
   def parse(file_name) do
@@ -53,14 +55,14 @@ defmodule Parser do
     {:ok, nodes}
   end
 
-  def node_name({:@, _line_number, content}) do
-    IO.inspect Enum.at(content, 0)
-  end
-
   defp _is_doc_node?({:@, _l, [{:moduledoc, _l2, [_text]}]}) do
     true
   end
   defp _is_doc_node?(_), do: false
+
+  def node_name({:@, _line_number, content}) do
+    IO.inspect Enum.at(content, 0)
+  end
 
   def node_name({:test, _line_number, content}) do
     IO.puts(Enum.at(content, 0))
@@ -72,11 +74,11 @@ defmodule Parser do
     get_assertions(nodes)
   end
 
-  def get_assertions(nodes) do
+  def get_assertions(nodes) when is_list(nodes) do
     nodes
     |> Enum.map(&print_assertion/1)
   end
-  def get_assertions(nil), do: ""
+  def get_assertions(nodes) when is_nil(nodes), do: ""
 
   def print_assertion({:assert, _line, _content} = node) do
     IO.puts(Macro.to_string(node))
