@@ -5,22 +5,29 @@ defmodule Parser do
   the test file and its tags, cases, and assertions.
   ##Examples
     iex> Parser.parse("test/fixtures/phoenix_controller_test.txt")
-    %TestFile{
-      name: "PhoenixControllerTest", 
-      docs: "For test purposes, here are the docs\\nsome more lines\\n"}
+    %TestFile{docs: "For test purposes, here are the docs\\nsome more lines\\n",
+            module_tags: [], name: "PhoenixControllerTest",
+            test_cases: [
+              %TestCase{
+                assertions: [
+                  "assert(response.status() == 200)",
+                  "assert(String.contains?(response.resp_body(), expectation_1))"],
+                name: "#POST /api/v1/the_apt returns proper response",
+                refutations: []
+              }
+            ]
+          }
   """
   @spec parse(String.t) :: TestFile.t
   def parse(file_name) do
     with {:ok, file} <- File.read(file_name),
          {:ok, ast} <- Code.string_to_quoted(file),
          {:ok, nodes} <- get_nodes(ast) do
-      # ast
-      # |> get_nodes
-      # |> Enum.map(&node_name/1)
 
       %TestFile{
        name: name(ast),
-       docs: get_docs(nodes)
+       docs: get_docs(nodes),
+       test_cases: get_test_cases(nodes)
       }
     else {:error, error} ->
       error
@@ -48,10 +55,16 @@ defmodule Parser do
     |> Enum.at(0)
   end
 
+  def get_test_cases(nodes) do
+    nodes
+    |> Enum.map(&build_test_case/1)
+    |> Enum.filter(&is_map/1)
+  end
+
   def get_nodes(ast) do
     {_def, _l, rest} = ast
     body = rest |> Enum.at(1) |> Enum.at(0)
-    {_do, {_block, _some_other_thing, nodes}} = body
+    {_do, {_block, _meta_data, nodes}} = body
     {:ok, nodes}
   end
 
@@ -60,15 +73,14 @@ defmodule Parser do
   end
   defp _is_doc_node?(_), do: false
 
-  def node_name({:@, _line_number, content}) do
-    IO.inspect Enum.at(content, 0)
+  def build_test_case({:test, _line, test}) do
+    %TestCase{
+      name: Enum.at(test, 0),
+      assertions: get_assertions(test),
+      refutations: get_refutations(test)
+    }
   end
-
-  def node_name({:test, _line_number, content}) do
-    IO.puts(Enum.at(content, 0))
-    get_assertions(content)
-  end
-  def node_name(_node_content), do: ""
+  def build_test_case(_), do: nil
 
   def get_assertions([_name, [{_do, {_block, _meta, nodes}}]]) do
     get_assertions(nodes)
@@ -76,15 +88,24 @@ defmodule Parser do
 
   def get_assertions(nodes) when is_list(nodes) do
     nodes
-    |> Enum.map(&print_assertion/1)
+    |> Enum.map(&get_assertion/1)
+    |> Enum.filter(fn assertion -> assertion != "" end)
   end
   def get_assertions(nodes) when is_nil(nodes), do: ""
 
-  def print_assertion({:assert, _line, _content} = node) do
-    IO.puts(Macro.to_string(node))
+  def get_refutations(nodes) when is_list(nodes) do
+    nodes
+    |> Enum.map(&get_refutation/1)
+    |> Enum.filter(fn refutation -> refutation != ""end)
   end
-  def print_assertion({:refute, _line, _content} = node) do
-    IO.puts(Macro.to_string(node))
+  def get_refutations(nodes) when is_nil(nodes), do: ""
+
+  def get_assertion({:assert, _line, _content} = node) do
+    Macro.to_string(node)
   end
-  def print_assertion(_), do: ""
+  def get_assertion(_), do: ""
+  def get_refutation({:refute, _line, _content} = node) do
+    Macro.to_string(node)
+  end
+  def get_refutation(_), do: ""
 end
