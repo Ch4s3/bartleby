@@ -13,7 +13,9 @@ defmodule Parser do
                   "assert(response.status() == 200)",
                   "assert(String.contains?(response.resp_body(), expectation_1))"],
                 name: "#POST /api/v1/the_apt returns proper response",
-                refutations: []
+                refutations: [
+                  "refute(response.status() == 400)"
+                ]
               }
             ]
           }
@@ -93,10 +95,14 @@ defmodule Parser do
   end
   def get_assertions(nodes) when is_nil(nodes), do: ""
 
+  def get_refutations([_name, [{_do, {_block, _meta, nodes}}]]) do
+    get_refutations(nodes)
+  end
+
   def get_refutations(nodes) when is_list(nodes) do
     nodes
     |> Enum.map(&get_refutation/1)
-    |> Enum.filter(fn refutation -> refutation != ""end)
+    |> Enum.filter(fn refutation -> refutation != "" end)
   end
   def get_refutations(nodes) when is_nil(nodes), do: ""
 
@@ -105,6 +111,7 @@ defmodule Parser do
   end
   def get_assertion(_), do: ""
   def get_refutation({:refute, _line, _content} = node) do
+    require IEx; IEx.pry
     Macro.to_string(node)
   end
   def get_refutation(_), do: ""

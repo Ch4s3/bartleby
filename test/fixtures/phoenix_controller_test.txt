@@ -11,6 +11,7 @@ defmodule PhoenixControllerTest do
       do_some_setup
       assert response.status == 200
       assert String.contains?(response.resp_body, expectation_1)
+      refute response.status == 400
     end
   end
 end
