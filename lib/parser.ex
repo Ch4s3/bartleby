@@ -1,32 +1,33 @@
 defmodule Parser do
+  alias Test.Case
   @moduledoc """
   The parser takes a file_name as an argument and converts it to an AST using
   `Code.string_to_quoted!`. It then parses the ast and builds a struct representing
   the test file and its tags, cases, and assertions.
   ##Examples
     iex> Parser.parse("test/fixtures/phoenix_controller_test.txt")
-    %TestFile{docs: "For test purposes, here are the docs\\nsome more lines\\n",
-            module_tags: [], name: "PhoenixControllerTest",
-            test_cases: [
-              %TestCase{
-                assertions: [
-                  "assert(response.status() == 200)",
-                  "assert(String.contains?(response.resp_body(), expectation_1))"],
-                name: "#POST /api/v1/the_apt returns proper response",
-                refutations: [
-                  "refute(response.status() == 400)"
-                ]
-              }
-            ]
-          }
+    %Test.File{docs: "For test purposes, here are the docs\\nsome more lines\\n",
+      module_tags: [], name: "PhoenixControllerTest",
+      test_cases: [
+        %Test.Case{
+          assertions: [
+            "assert(response.status() == 200)",
+            "assert(String.contains?(response.resp_body(), expectation_1))"],
+          name: "#POST /api/v1/the_apt returns proper response",
+          refutations: [
+            "refute(response.status() == 400)"
+          ]
+        }
+      ]
+    }
   """
-  @spec parse(String.t) :: TestFile.t
+  @spec parse(String.t) :: Test.File.t
   def parse(file_name) do
     with {:ok, file} <- File.read(file_name),
          {:ok, ast} <- Code.string_to_quoted(file),
          {:ok, nodes} <- get_nodes(ast) do
 
-      %TestFile{
+      %Test.File{
        name: name(ast),
        docs: get_docs(nodes),
        test_cases: get_test_cases(nodes)
@@ -76,7 +77,7 @@ defmodule Parser do
   defp _is_doc_node?(_), do: false
 
   def build_test_case({:test, _line, test}) do
-    %TestCase{
+    %Case{
       name: Enum.at(test, 0),
       assertions: get_assertions(test),
       refutations: get_refutations(test)
@@ -111,7 +112,6 @@ defmodule Parser do
   end
   def get_assertion(_), do: ""
   def get_refutation({:refute, _line, _content} = node) do
-    require IEx; IEx.pry
     Macro.to_string(node)
   end
   def get_refutation(_), do: ""
