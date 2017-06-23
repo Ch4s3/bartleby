@@ -1,4 +1,4 @@
 defmodule ParserTest do
   use ExUnit.Case
-  doctest Parser
+  doctest Bartleby.Parser
 end

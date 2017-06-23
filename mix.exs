@@ -7,6 +7,7 @@ defmodule Bartleby.Mixfile do
      elixir: "~> 1.4",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
+     escript: [main_module: Bartleby],
      deps: deps()]
   end
 
@@ -30,7 +31,8 @@ defmodule Bartleby.Mixfile do
   defp deps do
     [
       {:ex_doc, "~> 0.14", only: :dev, runtime: false},
-      {:poison, "~> 3.1.0"}
+      {:poison, "~> 3.1.0"},
+      {:firex, "~> 0.1.0"}
     ]
   end
 end
