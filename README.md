@@ -1,6 +1,6 @@
 # Bartleby
 
-[![Travis CI](https://travis-ci.org/Ch4s3/bartleby.svg?branch=master)](https://travis-ci.org/Ch4s3/bartleby) [![Coverage Status](https://coveralls.io/repos/Ch4s3/bartleby/badge.svg?branch=master)](https://coveralls.io/r/Ch4s3/bartleby?branch=master)
+[![Build Status](https://travis-ci.org/Ch4s3/bartleby.svg?branch=master)](https://travis-ci.org/Ch4s3/bartleby) [![Coverage Status](https://coveralls.io/repos/github/Ch4s3/bartleby/badge.svg?branch=master)](https://coveralls.io/github/Ch4s3/bartleby?branch=master)
 
 **TODO: Add description**
 
