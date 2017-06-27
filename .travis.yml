@@ -10,7 +10,5 @@ env:
  global:
    - MIX_ENV=test
 
-notifications:
-  email:
-    on_success: never
-    on_failure: never
+script:
+  - "MIX_ENV=test mix do deps.get, test && mix compile && mix coveralls.travis"
