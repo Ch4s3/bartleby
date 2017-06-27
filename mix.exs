@@ -8,7 +8,8 @@ defmodule Bartleby.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      escript: [main_module: Bartleby],
-     deps: deps()]
+     deps: deps(),
+     test_coverage: [tool: ExCoveralls]]
   end
 
   # Configuration for the OTP application
@@ -32,7 +33,8 @@ defmodule Bartleby.Mixfile do
     [
       {:ex_doc, "~> 0.14", only: :dev, runtime: false},
       {:poison, "~> 3.1.0"},
-      {:firex, "~> 0.1.0"}
+      {:firex, "~> 0.1.0"},
+      {:excoveralls, "~> 0.6", only: :test}
     ]
   end
 end

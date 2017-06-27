@@ -28,25 +28,27 @@ defmodule Bartleby.Parser do
 
   ## Exanmple:
   iex> Bartleby.Parser.parse("priv/fixtures/user_search_test.exs")
-	%Bartleby.TestCase.File{docs: ["## Simple Search\nBefore we implement a full solution with elastic search, we are building out a simple module that allows\nthe UMA app to be exposed to a very basic search interface. The goal of this interface is to search over\ntags and also by user first name, last name, or email address. It requires an exact, case sensitive match.\n",
-		"## Tag Search\nWe treat the tags a person has as if it is a database field in the sense of this search as described above.\nWe look over the exact match of a tags value. So this case largely is testing going across multiple attributes\nthat a given user has for the search\n",
-		"since we support many fields we also want to support many terms, this checks that",
-		"A group is a concept we have on the UMA and End User Sync projects. It is basically a tag `Group: foobar` that\nis searched like others but provides an interface that is needed for the user experience in both of those apps.\n"],
-	 module_tags: [], name: "UserSearchClientTest",
-	 test_cases: [%Bartleby.TestCase.Case{assertions: [],
-		 name: "finds a user if their email is given.", refutations: []},
-		%Bartleby.TestCase.Case{assertions: [],
-		 name: "finds a user if their first name is given", refutations: []},
-		%Bartleby.TestCase.Case{assertions: [],
-		 name: "finds a user if their last name is given", refutations: []},
-		%Bartleby.TestCase.Case{assertions: [],
-		 name: "can search by multiple fields (AKA by tags)", refutations: []},
-		%Bartleby.TestCase.Case{assertions: [],
-		 name: "can search by multiple fields for multiple search terms",
-		 refutations: []},
-		%Bartleby.TestCase.Case{assertions: [],
-		 name: "can offer interface to search on frontend concept of group",
-		 refutations: []}]}
+  %Bartleby.TestCase.File{docs: ["## Simple Search\nfoo bar bizz fubbb alfgjoir rgoiwtoijrgw  rgwoigoijwg tiowngoiwj grwiungoirwgori\nrgowroigjwo groiwjgroi2g rgiowrgiowg giorwjgiorwg rgiuw3girougnrwgiu giogri2\nfoo bar bizz fubbb alfgjoir rgoiwtoijrgw  rgwoigoijwg tiowngoiwj grwiungoirwgori\n",
+     "## Tag Search\nfoo bar bizz fubbb alfgjoir rgoiwtoijrgw  rgwoigoijwg tiowngoiwj grwiungoirwgori\nrgowroigjwo groiwjgroi2g rgiowrgiowg giorwjgiorwg rgiuw3girougnrwgiu giogri2\nfoo bar bizz fubbb alfgjoir rgoiwtoijrgw  rgwoigoijwg tiowngoiwj grwiungoirwgori\n",
+     "foo bar bizz fubbb alfgjoir rgoiwtoijrgw  rgwoigoijwg tiowngoiwj grwiungoirwgori\nrgowroigjwo groiwjgroi2g rgiowrgiowg giorwjgiorwg rgiuw3girougnrwgiu giogri2\nfoo bar bizz fubbb alfgjoir rgoiwtoijrgw  rgwoigoijwg tiowngoiwj grwiungoirwgori\n"],
+    module_tags: [], name: "UserSearchClientTest",
+    test_cases: [%Bartleby.TestCase.Case{assertions: [],
+      name: "finds a user if their email is given.", refutations: []},
+     %Bartleby.TestCase.Case{assertions: [],
+      name: "finds a user if their first name is given",
+      refutations: []},
+     %Bartleby.TestCase.Case{assertions: [],
+      name: "finds a user if their last name is given",
+      refutations: []},
+     %Bartleby.TestCase.Case{assertions: [],
+      name: "can search by multiple fields (AKA by tags)",
+      refutations: []},
+     %Bartleby.TestCase.Case{assertions: [],
+      name: "can search by multiple fields for multiple search terms",
+      refutations: []},
+     %Bartleby.TestCase.Case{assertions: [],
+      name: "can offer interface to search on frontend concept of group",
+      refutations: []}]}
   """
   def parse(file_name, opts \\ [])
   def parse(file_name, _opts) do
