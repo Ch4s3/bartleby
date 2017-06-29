@@ -18,7 +18,8 @@ defmodule Bartleby.Parser do
   def parse_files(dir) do
     dir
     |> File.ls!
-    |> Enum.reduce(fn (file, acc) -> [_get_file("#{dir}/#{file}") | acc] end)
+    |> Enum.reduce([], fn(file, acc) -> [_get_file("#{dir}/#{file}") | acc] end)
+    |> Enum.reject(&is_nil/1)
   end
 
   @spec parse(String.t, List.t) :: Bartleby.TestCase.File.t
@@ -63,7 +64,7 @@ defmodule Bartleby.Parser do
         test_cases: get_test_cases(nodes)
       }
     else {:error, error} ->
-      error
+      nil
     end
   end
 
